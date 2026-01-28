@@ -38,6 +38,16 @@ export const up = (pgm) => {
       type: "VARCHAR(50)",
       notNull: false,
     },
+    created_at: {
+      type: "TIMESTAMP",
+      notNull: true,
+      default: pgm.func("CURRENT_TIMESTAMP"),
+    },
+    updated_at: {
+      type: "TIMESTAMP",
+      notNull: true,
+      default: pgm.func("CURRENT_TIMESTAMP"),
+    },
   });
 
   // Add foreign key constraint
@@ -61,5 +71,5 @@ export const up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 export const down = (pgm) => {
-    pgm.dropTable('songs');
+  pgm.dropTable("songs");
 };

@@ -22,6 +22,16 @@ export const up = (pgm) => {
       type: "INTEGER",
       notNull: true,
     },
+    created_at: {
+      type: "TIMESTAMP",
+      notNull: true,
+      default: pgm.func("CURRENT_TIMESTAMP"),
+    },
+    updated_at: {
+      type: "TIMESTAMP",
+      notNull: true,
+      default: pgm.func("CURRENT_TIMESTAMP"),
+    },
   });
 };
 
