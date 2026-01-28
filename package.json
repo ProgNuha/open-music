@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js",
-    "lint": "eslint ./"
+    "start": "nodemon ./src/index.js",
+    "lint": "eslint ./",
+    "migrate": "node-pg-migrate"
   },
   "keywords": [],
   "author": "",
