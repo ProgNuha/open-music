@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 import { nanoid } from "nanoid";
 
-class SongRepository {
+class AlbumRepository {
   constructor() {
     this.pool = new Pool();
   }
@@ -17,6 +17,46 @@ class SongRepository {
     const result = await this.pool.query(query);
     return result.rows[0];
   }
+
+  async getById(id) {
+    const query = {
+      text: "SELECT * FROM albums WHERE id = $1",
+      values: [id],
+    };
+
+    const result = await this.pool.query(query);
+
+    return result.rows[0];
+  }
+
+    async getAlbums() {
+    const result = await this.pool.query('SELECT * FROM albums');
+    return result.rows;
+  }
+  
+  async editAlbum({ id, name, year }) {
+    const updatedAt = new Date().toISOString();
+ 
+    const query = {
+      text: 'UPDATE albums SET name = $1, year = $2, updated_at = $3 WHERE id = $4 RETURNING id',
+      values: [name, year, updatedAt, id],
+    };
+ 
+    const result = await this.pool.query(query);
+    
+    return result.rows[0];
+  }
+
+  async deleteAlbum(id) {
+    const query = {
+      text: 'DELETE FROM albums WHERE id = $1 RETURNING id',
+      values: [id],
+    };
+ 
+    const result = await this.pool.query(query);
+ 
+    return result.rows[0].id;
+  }
 }
 
-export default new SongRepository();
+export default new AlbumRepository();
