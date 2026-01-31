@@ -5,10 +5,10 @@ import { albumPayloadSchema, albumUpdatePayloadSchema, albumQuerySchema } from "
 
 const router = express.Router();
 
-router.post("/albums", validate(albumPayloadSchema), createAlbum);
-router.get("/albums", validate(albumQuerySchema), getAlbums);
-router.get("/albums/:id", getAlbumById);
-router.put("/albums/:id", validate(albumUpdatePayloadSchema), editAlbumById);
-router.delete("/albums/:id", deleteAlbumById);
+router.post("/", validate(albumPayloadSchema), createAlbum);
+router.get("/", validate(albumQuerySchema), getAlbums);
+router.get("/:id", getAlbumById);
+router.put("/:id", validate(albumUpdatePayloadSchema), editAlbumById);
+router.delete("/:id", deleteAlbumById);
 
 export default router;
