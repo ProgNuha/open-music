@@ -12,17 +12,7 @@ class SongRepository {
     const updatedAt = createdAt;
     const query = {
       text: 'INSERT INTO songs(id, title, year, genre, performer, duration, album_id, created_at, updated_at) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id as "songId", title, year, genre, performer, duration, album_id as "albumId", created_at, updated_at',
-      values: [
-        id,
-        title,
-        year,
-        genre,
-        performer,
-        duration,
-        albumId,
-        createdAt,
-        updatedAt,
-      ],
+      values: [id, title, year, genre, performer, duration, albumId, createdAt, updatedAt],
     };
     const result = await this.pool.query(query);
     return result.rows[0];
@@ -30,7 +20,7 @@ class SongRepository {
 
   async getById(id) {
     const query = {
-      text: 'SELECT id, title, year, genre, performer, duration, album_id as "albumId" FROM songs WHERE id = $1',
+      text: "SELECT id, title, year, genre, performer, duration, album_id as \"albumId\" FROM songs WHERE id = $1",
       values: [id],
     };
 
@@ -69,28 +59,40 @@ class SongRepository {
     const result = await this.pool.query(query);
     return result.rows;
   }
-
+  
   async editSong({ id, title, year, genre, performer, duration, albumId }) {
     const updatedAt = new Date().toISOString();
-
+    
+    const currentSong = await this.getById(id);
+    if (!currentSong) {
+      return null;
+    }
+    
+    const finalTitle = title !== undefined ? title : currentSong.title;
+    const finalYear = year !== undefined ? year : currentSong.year;
+    const finalGenre = genre !== undefined ? genre : currentSong.genre;
+    const finalPerformer = performer !== undefined ? performer : currentSong.performer;
+    const finalDuration = duration !== undefined ? duration : currentSong.duration;
+    const finalAlbumId = albumId !== undefined ? albumId : currentSong.albumId;
+ 
     const query = {
-      text: "UPDATE songs SET title = $1, year = $2, genre = $3, performer = $4, duration = $5, album_id = $6, updated_at = $7 WHERE id = $8 RETURNING id",
-      values: [title, year, genre, performer, duration, albumId, updatedAt, id],
+      text: 'UPDATE songs SET title = $1, year = $2, genre = $3, performer = $4, duration = $5, album_id = $6, updated_at = $7 WHERE id = $8 RETURNING id',
+      values: [finalTitle, finalYear, finalGenre, finalPerformer, finalDuration, finalAlbumId, updatedAt, id],
     };
-
+ 
     const result = await this.pool.query(query);
-
+    
     return result.rows[0];
   }
 
   async deleteSong(id) {
     const query = {
-      text: "DELETE FROM songs WHERE id = $1 RETURNING id",
+      text: 'DELETE FROM songs WHERE id = $1 RETURNING id',
       values: [id],
     };
-
+ 
     const result = await this.pool.query(query);
-
+ 
     return result.rows[0];
   }
 }

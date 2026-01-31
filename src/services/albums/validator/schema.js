@@ -6,8 +6,8 @@ export const albumPayloadSchema = Joi.object({
 });
 
 export const albumUpdatePayloadSchema = Joi.object({
-  name: Joi.string().max(50),
-  year: Joi.number(),
+  name: Joi.string().required().max(50),
+  year: Joi.number().required(),
 });
 
 export const albumQuerySchema = Joi.object({

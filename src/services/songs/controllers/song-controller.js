@@ -3,20 +3,21 @@ import response from "../../../utils/response.js";
 import { InvariantError, NotFoundError } from "../../../exceptions/index.js";
 
 export const createSong = async (req, res, next) => {
-  const { title, year, genre, performer, duration } = req.validated;
+  const { title, year, genre, performer, duration, albumId } = req.validated;
   const song = await SongRepository.create({
     title,
     year,
     genre,
     performer,
-    duration
+    duration,
+    albumId
   });
  
   if (!song) {
     return next(new InvariantError('Lagu gagal ditambahkan'));
   }
  
-  return response(res, 201, 'Lagu berhasil ditambahkan', song);
+  return response(res, 201, 'Lagu berhasil ditambahkan', { songId: song.songId });
 };
 
 export const getSongs = async (req, res) => {
@@ -60,7 +61,7 @@ export const editSongById = async (req, res, next) => {
     return next(new NotFoundError('Lagu tidak ditemukan'));
   }
   
-  return response(res, 200, 'Lagu berhasil diperbarui', song);
+  return response(res, 200, 'Lagu berhasil diperbarui', { message: 'Lagu berhasil diperbarui' });
 };
 
 export const deleteSongById = async (req, res, next) => {
@@ -71,5 +72,5 @@ export const deleteSongById = async (req, res, next) => {
     return next(new NotFoundError('Lagu tidak ditemukan'));
   }
  
-  return response(res, 200, 'Lagu berhasil dihapus', deletedSong);
+  return response(res, 200, 'Lagu berhasil dihapus', { message: 'Lagu berhasil dihapus' });
 };

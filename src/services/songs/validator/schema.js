@@ -10,10 +10,10 @@ export const songPayloadSchema = Joi.object({
 });
 
 export const songUpdatePayloadSchema = Joi.object({
-  title: Joi.string().max(100),
-  year: Joi.number().integer().min(1900).max(2100),
-  genre: Joi.string().max(50),
-  performer: Joi.string().max(100),
+  title: Joi.string().required().max(100),
+  year: Joi.number().required().integer().min(1900).max(2100),
+  genre: Joi.string().required().max(50),
+  performer: Joi.string().required().max(100),
   duration: Joi.number().integer().min(0),
   albumId: Joi.string().max(50),
 });
