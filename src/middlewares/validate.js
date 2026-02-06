@@ -1,13 +1,16 @@
-const validate = (schema) => (req, res, next) => {
-  const { error, value } = schema.validate(req.body, {
-    abortEarly: false,
-    allowUnknown: false,
-    stripUnknown: true,
-  });
+import InvariantError from "../exceptions/invariant-error.js";
 
-  if (error) return next(error);
-  req.validated = value;
-  next();
+const validate = (schema) => {
+  return (req, res, next) => {
+    const { error, value } = schema.validate(req.body);
+    
+    if (error) {
+      return next(new InvariantError(error.message));
+    }
+    
+    req.validated = value;
+    next();
+  };
 };
 
 export default validate;
