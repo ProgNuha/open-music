@@ -1,5 +1,5 @@
 import PlaylistsRepository from "../repositories/playlist-repository.js";
-import {verifySongExists}  from "../../songs/controllers/song-controller.js";
+import { verifySongExists } from "../../songs/controllers/song-controller.js";
 import { success } from "../../../utils/response.js";
 
 const playlistsRepository = new PlaylistsRepository();
@@ -98,6 +98,20 @@ export const deleteSongFromPlaylist = async (req, res, next) => {
     });
 
     success(res, null, "Lagu berhasil dihapus dari playlist");
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPlaylistActivities = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { id: userId } = req.user;
+
+    await playlistsRepository.verifyPlaylistAccess(id, userId);
+    const activities = await playlistsRepository.getActivities(id);
+
+    success(res, { playlistId: id, activities });
   } catch (error) {
     next(error);
   }
