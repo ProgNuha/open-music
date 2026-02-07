@@ -16,23 +16,18 @@ export const up = (pgm) => {
     },
     playlist_id: {
       type: "VARCHAR(50)",
-      notNull: true,
     },
     song_id: {
       type: "VARCHAR(50)",
-      notNull: true,
     },
     user_id: {
       type: "VARCHAR(50)",
-      notNull: true,
     },
     action: {
       type: "VARCHAR(50)",
-      notNull: true,
     },
     time: {
       type: "TIMESTAMP",
-      notNull: true,
       default: pgm.func("current_timestamp"),
     },
   });

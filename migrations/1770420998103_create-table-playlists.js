@@ -16,11 +16,9 @@ export const up = (pgm) => {
     },
     name: {
       type: "TEXT",
-      notNull: true,
     },
     owner: {
       type: "VARCHAR(50)",
-      notNull: true,
     },
   });
 

@@ -16,11 +16,9 @@ export const up = (pgm) => {
     },
     playlist_id: {
       type: "VARCHAR(50)",
-      notNull: true,
     },
     user_id: {
       type: "VARCHAR(50)",
-      notNull: true,
     },
   });
 

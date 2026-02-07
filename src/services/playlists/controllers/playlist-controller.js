@@ -1,12 +1,14 @@
 import PlaylistsRepository from "../repositories/playlist-repository.js";
-import SongsRepository from "../../songs/repositories/song-repository.js";
+import songsRepository  from "../../songs/repositories/song-repository.js";
 import { success } from "../../../utils/response.js";
 
 const playlistsRepository = new PlaylistsRepository();
+// const songsRepository = new SongsRepository();
 
 export const addPlaylist = async (req, res, next) => {
   try {
-    const { name, userId } = req.validated;
+    const { name } = req.validated;
+    const { id: userId } = req.user;
 
     const playlistId = await playlistsRepository.addPlaylist({
       name,
@@ -21,7 +23,7 @@ export const addPlaylist = async (req, res, next) => {
 
 export const getPlaylists = async (req, res, next) => {
   try {
-    const { userId } = req.user;
+    const { id: userId } = req.user;
 
     const playlists = await playlistsRepository.getPlaylists(userId);
 
@@ -47,10 +49,12 @@ export const deletePlaylistById = async (req, res, next) => {
 
 export const addSongToPlaylist = async (req, res, next) => {
   try {
-    const { songId, id, userId } = req.validated;
+    const { songId } = req.validated;
+    const { id } = req.params;
+    const { id: userId } = req.user;
 
     await playlistsRepository.verifyPlaylistAccess(id, userId);
-    await SongsRepository.getSongById(songId);
+    await songsRepository.getById(songId);
     await playlistsRepository.addSongToPlaylist(id, songId);
     await playlistsRepository.addActivity({
       playlistId: id,
@@ -68,7 +72,7 @@ export const addSongToPlaylist = async (req, res, next) => {
 export const getSongsFromPlaylist = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { userId } = req.user;
+    const { id: userId } = req.user;
 
     await playlistsRepository.verifyPlaylistAccess(id, userId);
     const playlist = await playlistsRepository.getSongsFromPlaylist(id);
@@ -81,7 +85,9 @@ export const getSongsFromPlaylist = async (req, res, next) => {
 
 export const deleteSongFromPlaylist = async (req, res, next) => {
   try {
-    const { songId, id, userId } = req.validated;
+    const { songId } = req.validated;
+    const { id } = req.params;
+    const { id: userId } = req.user;
 
     await playlistsRepository.verifyPlaylistAccess(id, userId);
     await playlistsRepository.deleteSongFromPlaylist(id, songId);
