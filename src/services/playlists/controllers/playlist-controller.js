@@ -1,9 +1,8 @@
 import PlaylistsRepository from "../repositories/playlist-repository.js";
-import songsRepository  from "../../songs/repositories/song-repository.js";
+import {verifySongExists}  from "../../songs/controllers/song-controller.js";
 import { success } from "../../../utils/response.js";
 
 const playlistsRepository = new PlaylistsRepository();
-// const songsRepository = new SongsRepository();
 
 export const addPlaylist = async (req, res, next) => {
   try {
@@ -36,7 +35,7 @@ export const getPlaylists = async (req, res, next) => {
 export const deletePlaylistById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { userId } = req.user;
+    const { id: userId } = req.user;
 
     await playlistsRepository.verifyPlaylistOwner(id, userId);
     await playlistsRepository.deletePlaylistById(id);
@@ -50,14 +49,14 @@ export const deletePlaylistById = async (req, res, next) => {
 export const addSongToPlaylist = async (req, res, next) => {
   try {
     const { songId } = req.validated;
-    const { id } = req.params;
+    const { id: playlistId } = req.params;
     const { id: userId } = req.user;
 
-    await playlistsRepository.verifyPlaylistAccess(id, userId);
-    await songsRepository.getById(songId);
-    await playlistsRepository.addSongToPlaylist(id, songId);
+    await playlistsRepository.verifyPlaylistAccess(playlistId, userId);
+    await verifySongExists(songId);
+    await playlistsRepository.addSongToPlaylist(playlistId, songId);
     await playlistsRepository.addActivity({
-      playlistId: id,
+      playlistId,
       songId,
       userId,
       action: "add",

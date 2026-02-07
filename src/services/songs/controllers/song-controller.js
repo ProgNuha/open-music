@@ -74,3 +74,13 @@ export const deleteSongById = async (req, res, next) => {
  
   return response(res, 200, 'Lagu berhasil dihapus', { message: 'Lagu berhasil dihapus' });
 };
+
+export const verifySongExists = async (songId) => {
+  const song = await SongRepository.getById(songId);
+ 
+  if (!song) {
+    throw new NotFoundError('Lagu tidak ditemukan');
+  }
+ 
+  return song;
+};
