@@ -2,6 +2,8 @@ import UsersRepository from '../repositories/user-repository.js';
 import { UserPayloadSchema } from '../validator/schema.js';
 import validatePayload from '../../../utils/validator.js';
 import { success } from '../../../utils/response.js';
+import { NotFoundError } from "../../../exceptions/index.js";
+
 
 const usersRepository = new UsersRepository();
 
@@ -28,6 +30,16 @@ const UserController = {
     } catch (error) {
       next(error);
     }
+  },
+
+  verifyUserExists: async (userId) => {
+    const user = await usersRepository.getById(userId);
+  
+    if (!user) {
+      throw new NotFoundError('User tidak ditemukan');
+    }
+  
+    return user;
   },
 };
 
