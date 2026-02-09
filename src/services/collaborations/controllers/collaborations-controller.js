@@ -1,10 +1,12 @@
 import CollaborationsRepository from "../repositories/collaborations-repository.js";
 import PlaylistsRepository from "../../playlists/repositories/playlist-repository.js";
-import UserController from "../../users/controllers/user-controller.js";
+import UserRepository from "../../users/repositories/user-repository.js";
+// import UserController from "../../users/controllers/user-controller.js";
 import { success } from "../../../utils/response.js";
 
 const collaborationsRepository = new CollaborationsRepository();
 const playlistsRepository = new PlaylistsRepository();
+const userRepository = new UserRepository();
 
 export const addCollaboration = async (req, res, next) => {
   try {
@@ -12,7 +14,9 @@ export const addCollaboration = async (req, res, next) => {
     const { id: credentialId } = req.user;
 
     await playlistsRepository.verifyPlaylistOwner(playlistId, credentialId);
-    await UserController.verifyUserExists(userId);
+    await userRepository.getUserById(userId);
+
+    // await UserController.verifyUserExists(userId);
     const collaborationId = await collaborationsRepository.addCollaboration(
       playlistId,
       userId,
