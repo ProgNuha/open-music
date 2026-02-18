@@ -25,7 +25,7 @@ class AlbumRepository {
     };
 
     const result = await this.pool.query(query);
-    
+
     if (!result.rows[0]) {
       return null;
     }
@@ -36,47 +36,72 @@ class AlbumRepository {
       text: "SELECT id, title, performer FROM songs WHERE album_id = $1",
       values: [id],
     };
-    
+
     const songsResult = await this.pool.query(songsQuery);
     album.songs = songsResult.rows;
 
     return album;
   }
+  async getAlbumById(id) {
+    const query = {
+      text: 'SELECT id, name, year, cover_url as "coverUrl" FROM albums WHERE id = $1',
+      values: [id],
+    };
+
+    const result = await this.pool.query(query);
+
+    if (!result.rows[0]) {
+      return null;
+    }
+
+    return result.rows[0];
+  }
 
   async getAlbums() {
-    const result = await this.pool.query('SELECT * FROM albums');
+    const result = await this.pool.query("SELECT * FROM albums");
     return result.rows;
   }
-  
+
   async editAlbum({ id, name, year }) {
     const updatedAt = new Date().toISOString();
-    
+
     const currentAlbum = await this.getById(id);
     if (!currentAlbum) {
       return null;
     }
-    
+
     const finalName = name !== undefined ? name : currentAlbum.name;
     const finalYear = year !== undefined ? year : currentAlbum.year;
- 
+
     const query = {
-      text: 'UPDATE albums SET name = $1, year = $2, updated_at = $3 WHERE id = $4 RETURNING id',
+      text: "UPDATE albums SET name = $1, year = $2, updated_at = $3 WHERE id = $4 RETURNING id",
       values: [finalName, finalYear, updatedAt, id],
     };
- 
+
     const result = await this.pool.query(query);
-    
+
     return result.rows[0];
   }
 
   async deleteAlbum(id) {
     const query = {
-      text: 'DELETE FROM albums WHERE id = $1 RETURNING id',
+      text: "DELETE FROM albums WHERE id = $1 RETURNING id",
       values: [id],
     };
- 
+
     const result = await this.pool.query(query);
- 
+
+    return result.rows[0];
+  }
+
+  async updateAlbumCover(id, coverUrl) {
+    const updatedAt = new Date().toISOString();
+    const query = {
+      text: "UPDATE albums SET cover_url = $1, updated_at = $2 WHERE id = $3 RETURNING id",
+      values: [coverUrl, updatedAt, id],
+    };
+
+    const result = await this.pool.query(query);
     return result.rows[0];
   }
 }

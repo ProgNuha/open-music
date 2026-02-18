@@ -1,17 +1,24 @@
 import { InvariantError } from '../exceptions/index.js';
 
-const validatePayload = (schema, payload) => {
-  const { error, value } = schema.validate(payload, {
-    abortEarly: false,
-    allowUnknown: false,
-    stripUnknown: true,
-  });
+const validate = (schema) => {
+  return (req, res, next) => {
+    try {
+      const { error, value } = schema.validate(req.body, {
+        abortEarly: false,
+        allowUnknown: false,
+        stripUnknown: true,
+      });
 
-  if (error) {
-    throw new InvariantError(error.details.map(detail => detail.message).join(', '));
-  }
+      if (error) {
+        throw new InvariantError(error.details.map(detail => detail.message).join(', '));
+      }
 
-  return value;
+      req.body = value;
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
 };
 
-export default validatePayload;
+export default validate;
