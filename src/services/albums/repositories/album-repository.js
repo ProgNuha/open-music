@@ -54,7 +54,17 @@ class AlbumRepository {
       return null;
     }
 
-    return result.rows[0];
+    const album = result.rows[0];
+
+    const songsQuery = {
+      text: "SELECT id, title, performer FROM songs WHERE album_id = $1",
+      values: [id],
+    };
+
+    const songsResult = await this.pool.query(songsQuery);
+    album.songs = songsResult.rows;
+
+    return album;
   }
 
   async getAlbums() {
