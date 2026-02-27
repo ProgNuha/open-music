@@ -47,13 +47,11 @@ export const writeFile = async (file, meta) => {
     return `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${filename}`;
   } else {
     const filepath = path.join(uploadPath, filename);
-    const fileStream = fs.createWriteStream(filepath);
 
     return new Promise((resolve, reject) => {
-      fileStream.on('error', (error) => reject(error));
-      file.pipe(fileStream);
-      file.on('end', () => {
-        const fileUrl = `http://localhost:${process.env.PORT || 5000}/uploads/${filename}`;
+      fs.writeFile(filepath, file, (error) => {
+        if (error) return reject(error);
+        const fileUrl = `http://${process.env.HOST || 'localhost'}:${process.env.PORT || 3000}/uploads/${filename}`;
         resolve(fileUrl);
       });
     });

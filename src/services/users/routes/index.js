@@ -1,9 +1,11 @@
 import express from 'express';
-import UserController from '../controllers/user-controller.js';
+import {addUser, getUserById} from '../controllers/user-controller.js';
+import validate from '../../../middlewares/validate.js';
+import { UserPayloadSchema } from '../validator/schema.js';  
 
 const router = express.Router();
 
-router.post('/', UserController.addUser);
-router.get('/:id', UserController.getUserById);
+router.post('/', validate(UserPayloadSchema), addUser);  
+router.get('/:id', getUserById);
 
 export default router;

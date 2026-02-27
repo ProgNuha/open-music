@@ -22,8 +22,8 @@ class ExportsRepository {
     const query = {
       text: `SELECT songs.id, songs.title, songs.performer
              FROM songs
-             LEFT JOIN playlists_songs ON songs.id = playlists_songs.song_id
-             WHERE playlists_songs.playlist_id = $1`,
+             LEFT JOIN playlist_songs ON songs.id = playlist_songs.song_id
+             WHERE playlist_songs.playlist_id = $1`,
       values: [playlistId],
     };
 

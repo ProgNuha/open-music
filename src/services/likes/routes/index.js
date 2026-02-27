@@ -1,25 +1,11 @@
 import express from 'express';
-import LikesController from '../controllers/likes-controller.js';
-import authenticateToken from '../../../middlewares/authenticate.js';
+import { postLikeAlbumHandler, deleteLikeAlbumHandler, getAlbumLikesHandler } from '../controllers/likes-controller.js';
+import authenticateToken from '../../../middlewares/authentication.js';
 
 const router = express.Router();
-const likesController = new LikesController();
 
-router.post(
-  '/:id/likes',
-  authenticateToken,
-  (req, res, next) => likesController.postLikeAlbumHandler(req, res, next)
-);
-
-router.delete(
-  '/:id/likes',
-  authenticateToken,
-  (req, res, next) => likesController.deleteLikeAlbumHandler(req, res, next)
-);
-
-router.get(
-  '/:id/likes',
-  (req, res, next) => likesController.getAlbumLikesHandler(req, res, next)
-);
+router.post("/:id/likes", authenticateToken, postLikeAlbumHandler);
+router.delete("/:id/likes", authenticateToken, deleteLikeAlbumHandler);
+router.get("/:id/likes", getAlbumLikesHandler);
 
 export default router;

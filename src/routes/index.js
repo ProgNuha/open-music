@@ -7,11 +7,13 @@ import playlists from '../services/playlists/routes/index.js';
 import collaborations from '../services/collaborations/routes/index.js';
 import uploads from '../services/uploads/routes/index.js';
 import exports from '../services/exports/routes/index.js';
+import likes from '../services/likes/routes/index.js';
  
 const router = Router();
  
 router.use('/albums', albums);
 router.use('/albums', uploads);
+router.use('/albums', likes);
 router.use('/songs', songs);
 router.use('/users', users);
 router.use('/authentications', authentications);
